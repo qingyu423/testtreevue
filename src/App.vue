@@ -1,28 +1,36 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <vue-tree isRoot :treeData="treeData" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import vueTree from './components/vueTree.vue'
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    vueTree
+  },
+  data() {
+    return {
+      treeData: {
+        id: 1,
+        name: 'zs',
+        children: [
+          {id: 2, name: 'ww', children: [
+            { id: 5, name: 'ddd', children: []},
+            { id: 6, name: 'ddd', children: []},
+            { id: 7, name: 'ddd', children: []},
+            { id: 8, name: 'ddd', children: []}
+          ]},
+          {id: 3, name: 'zl', children: []},
+          {id: 4, name: 'qq', children: []},
+        ]
+      }
+    }
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
