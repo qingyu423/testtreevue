@@ -1,104 +1,74 @@
 <template>
-  <div class="vue-tree">
-    <div :class="isRoot ? 'tree-header' : 'tree-content-item'">
-        <div class="header-box">
-          <span>{{ treeData.name }}</span>
-          <div class="right-line">
-          </div>
-          <img v-show="!treeData.isOpen" class="line-dot" src="../assets/add.png" alt="" @click="dotClick(treeData, true)">
-          <img v-show="treeData.isOpen" class="line-dot" src="../assets/cut.png" alt="" @click="dotClick(treeData, false)">
-          <div class="left-line" v-if="!isRoot"></div>
-        </div>
+  <div class="root-tree">
+    <div class="root-tree-header" :style="`padding-top:${isMax - boxHeight}px;`">
+      <div class="header-box" ref="headerBox">
+        <slot v-bind:nodeData="treeData"></slot>
+        <div class="righ-line"></div>
+        <img v-show="treeData.isOpen" class="line-dot" src="../assets/add.png" alt="" @click="handleClick">
+        <img v-show="!treeData.isOpen" class="line-dot" src="../assets/cut.png" alt="" @click="handleClick">
+      </div>
     </div>
-    <div class="tree-content-item-line" v-if="!isRoot && isshow"></div>
-    <div class="tree-content" v-if="treeData.children" v-show="treeData.isOpen">
-      <vue-tree v-for="(item,index) in treeData.children" :key="item.id" :treeData="item" :isshow="index === treeData.children.length - 1 ? false : true" />
+    <div class="root-tree-content" v-if="treeData.children" v-show="!treeData.isOpen">
+      <vue-tree-item v-for="(item, index) in treeData.children" :key="item.id" :treeData="item" :index="index + 1" :indexTotal="treeData.children.length">
+        <template v-slot:default="data">
+          <slot v-bind:nodeData="data.nodeData"></slot>
+        </template>
+      </vue-tree-item>
     </div>
   </div>
 </template>
 
 <script>
+import vueTreeItem from './vueTreeItem.vue'
 export default {
-  name: 'vueTree',
+  components: {
+    vueTreeItem
+  },
+  data() {
+    return {
+      isTree: true,
+      isMax: 0,
+      boxHeight: 0
+    }
+  },
+  created() {
+  },
+  mounted() {
+    this.boxHeight = this.$refs.headerBox.clientHeight / 2
+    this.isMax = this.boxHeight
+  },
+  methods: {
+    handleClick() {
+      this.$emit('dotclick', this.treeData)
+    }
+  },
   props: {
     treeData: {
       type: Object,
       default: function() {
         return {}
       }
-    },
-    isRoot: {
-      type: Boolean,
-      default: false
-    },
-    isshow: {
-      type: Boolean,
-      default: true
     }
-  },
-  computed: {
-    dotOpen: {
-      get() {
-        return this.treeData.isOpen
-      },
-      set(val) {
-        this.$set(this.treeData, 'isOpen', val)
-      }
-    }
-  },
-  methods: {
-    dotClick(data, val) {
-      this.dotOpen = val
-    } 
-  },
-  created() {
-    console.log(this.$parent)
   }
-
 }
 </script>
 
 <style scoped>
-.vue-tree{
+.root-tree{
   display: flex;
+}
+.header-box{
   position: relative;
 }
-.tree-header{
+.root-tree-header{
   flex-shrink: 0;
   padding-right: 40px;
 }
-.tree-content-item{
-  padding: 0 40px 0 50px;
-  margin-bottom: 20px;
-}
-.tree-content-item-line{
-  position: absolute;
-  width: 10px;
-  height: calc(100% + 10px);
-  left: 0%;
-  top: 45px;
-  background: rgb(148, 146, 146);
-}
-.header-box{
-  width: 241px;
-  height: 100px;
-  position: relative;
-  background: green;
-}
-.left-line{
+.righ-line{
   position: absolute;
   width: 40px;
   height: 10px;
-  background: rgb(148, 146, 146);
-  left: -40px;
-  top: 50%;
-  margin-top: -5px;
-}
-.right-line{
-  position: absolute;
-  width: 40px;
-  height: 10px;
-  background: rgb(148, 146, 146);
+  background: rgb(85, 84, 84);
   right: -40px;
   top: 50%;
   margin-top: -5px;
@@ -113,8 +83,4 @@ export default {
   z-index: 100;
   cursor: pointer;
 }
-.tree-content{
-  flex-shrink: 0;
-}
-
 </style>
