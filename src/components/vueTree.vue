@@ -28,7 +28,9 @@ export default {
     return {
       isTree: true,
       isMax: 0,
-      boxHeight: 0
+      isRoot: false,
+      boxHeight: 0,
+      historyMax: 0
     }
   },
   created() {
@@ -36,6 +38,16 @@ export default {
   mounted() {
     this.boxHeight = this.$refs.headerBox.clientHeight / 2
     this.isMax = this.boxHeight
+    this.historyMax = this.boxHeight
+    this.isRoot = true
+  },
+  watch: {
+    isMax(newdata) {
+      console.log('根节点')
+      if (newdata > this.historyMax) {
+        this.historyMax = newdata
+      }
+    }
   },
   methods: {
     handleClick() {

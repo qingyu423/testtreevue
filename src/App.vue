@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <vue-tree :treeData="treeData" @dotclick="dotClick">
+    <button @click="onclick">didiid</button>
+    <vue-tree :treeData="treeData" @dotclick="dotClick" ref="test">
       <template v-slot:default="data">
         <div class="box-content" :style="`height: ${data.nodeData.hheight}px`"></div>
       </template>
@@ -43,6 +44,9 @@ export default {
       else {
         console.log('点击')
       }
+    },
+    onclick() {
+      console.log(this.$refs)
     }
   },
   data() {

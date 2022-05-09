@@ -65,21 +65,41 @@ export default {
   },
   mounted() {
     this.boxHeight = this.$refs.headerBox.clientHeight / 2
-    if (this.index === 1) {
-      this.isMax = this.boxHeight > this.$parent.boxHeight ?  this.boxHeight : this.$parent.isMax
-    } else {
+    if (this.index > 1) {
+      this.isRoot = true
       this.isMax = this.boxHeight
+      this.historyMax = this.boxHeight
+    } else {
+      this.isMax = this.boxHeight > this.$parent.boxHeight ?  this.boxHeight : this.$parent.isMax
     }
   },
   watch: {
-    isMax(newdata) {
-      if (newdata > this.$parent.isMax && this.index === 1 ) {
-        this.$parent.isMax= newdata
+    isMax: function(newdata) {
+      if (newdata > this.$parent.isMax && this.index === 1) {
+        this.$parent.isMax = newdata
+      }
+    },
+    'treeData.isOpen': function(newdata) {
+      if (newdata) {
+        let parent = this.$parent
+        let max = parent.boxHeight > this.boxHeight ? parent.boxHeight : this.boxHeight
+        while(!parent.isRoot) {
+          parent = parent.$parent
+          max = max > parent.boxHeight ? max : parent.boxHeight
+        }
+        // while(!parent.treeData.isOpen) {
+        //   parent.isMax =  max
+        //   parent = parent.$children[0]
+        // }
+        // this.isMax = max
       }
     }
   },
   data() {
     return {
+      flag: false,
+      isRoot: false,
+      historyMax: 0,
       isMax: 0,
       boxHeight: 0,
       tree: null
